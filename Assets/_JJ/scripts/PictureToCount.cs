@@ -61,7 +61,7 @@ public class PictureToCount
 
             contours_filtered_count++;
             // Draw each contour only for visualisation purposes
-            Imgproc.drawContours(augmented, contours, i, new Scalar(0, 0, 255), 2);
+            Imgproc.drawContours(augmented, contours, i, new Scalar(255, 0, 0, 128), 2);
 
             ////Construct a buffer used by the pca analysis
             //List<Point> pts = contours[i].toList();

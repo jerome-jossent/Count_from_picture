@@ -65,8 +65,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\_JJ\UI\Parametre.cs" />
+    <Compile Include="Assets\_JJ\scripts\CountManager.cs" />
+    <Compile Include="Assets\_JJ\scripts\IHMManager.cs" />
+    <Compile Include="Assets\_JJ\scripts\ImageProcess.cs" />
     <Compile Include="Assets\_JJ\scripts\PictureToCount.cs" />
+    <Compile Include="Assets\_JJ\scripts\ScriptsManager.cs" />
+    <Compile Include="Assets\_JJ\scripts\SourceManager.cs" />
     <Compile Include="Assets\_JJ\scripts\WebCamManager.cs" />
+    <Compile Include="Assets\_JJ\scripts\Webcam_Manager.cs" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap.shader" />

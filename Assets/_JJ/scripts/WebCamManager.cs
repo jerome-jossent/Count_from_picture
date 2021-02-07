@@ -10,39 +10,16 @@ using System;
 
 public class WebCamManager : MonoBehaviour
 {
-    [SerializeField] Parametre threshold_thresh_valeur;
-
-    enum Output_type { original, gray, binary, augmented }
-    [SerializeField] Output_type output_Type;
-    public TMPro.TMP_Dropdown output_Type_dropdown;
-
-    PictureToCount.Seuillage_type seuillage_Type;
-    public TMPro.TMP_Dropdown seuillage_Type_dropdown;
-
-    public TMPro.TMP_Text count_text;
-    public bool stream_on;
+    public bool _initialized;
+    public bool _stream_on;
+    public Mat _webCam_Mat;
+    ScriptsManager _sm;
 
     private void Awake()
     {
-        threshold_thresh_valeur._SetValue(50);
-
-
-        output_Type_dropdown.options.Clear();
-        foreach (var item in Enum.GetValues(typeof(Output_type)))
-            output_Type_dropdown.options.Add(new TMPro.TMP_Dropdown.OptionData(item.ToString()));
-
-        output_Type_dropdown.value = output_Type_dropdown.options.Count - 1;
-        _output_Type_dropdown_Change();
-
-
-        seuillage_Type_dropdown.options.Clear();
-        foreach (var item in Enum.GetValues(typeof(PictureToCount.Seuillage_type)))
-            seuillage_Type_dropdown.options.Add(new TMPro.TMP_Dropdown.OptionData(item.ToString()));
-
-        seuillage_Type_dropdown.value = 0;
-        _seuillage_Type_dropdown_Change();
-
-        stream_on = true;
+        _sm = GameObject.Find("ScriptsManager").GetComponent<ScriptsManager>();
+        _initialized = false;
+        _stream_on = false;
     }
 
     #region VARIABLES
@@ -59,19 +36,18 @@ public class WebCamManager : MonoBehaviour
 
     WebCamTexture webCamTexture;
     WebCamDevice webCamDevice;
-    Mat rgbaMat;
-    Color32[] colors;
-    Texture2D texture;
+    //Color32[] colors;
+    //Texture2D texture;
     bool isInitWaiting = false;
     bool hasInitDone = false;
-    FpsMonitor fpsMonitor;
+    //FpsMonitor fpsMonitor;
     #endregion
 
     #region WebCam
 
     void Start()
     {
-        fpsMonitor = GetComponent<FpsMonitor>();
+        //fpsMonitor = GetComponent<FpsMonitor>();
 
         WebCamTexture_Initialize();
     }
@@ -162,10 +138,10 @@ public class WebCamManager : MonoBehaviour
 
         if (!UnityEngine.Android.Permission.HasUserAuthorizedPermission(permission))
         {
-            if (fpsMonitor != null)
-            {
-                fpsMonitor.consoleText = "Camera permission is denied.";
-            }
+            //if (fpsMonitor != null)
+            //{
+            //    fpsMonitor.consoleText = "Camera permission is denied.";
+            //}
             isInitWaiting = false;
             yield break;
         }
@@ -280,50 +256,52 @@ public class WebCamManager : MonoBehaviour
             WebCamTexture.Destroy(webCamTexture);
             webCamTexture = null;
         }
-        if (rgbaMat != null)
+        if (_webCam_Mat != null)
         {
-            rgbaMat.Dispose();
-            rgbaMat = null;
+            _webCam_Mat.Dispose();
+            _webCam_Mat = null;
         }
-        if (texture != null)
-        {
-            Texture2D.Destroy(texture);
-            texture = null;
-        }
+        //if (texture != null)
+        //{
+        //    Texture2D.Destroy(texture);
+        //    texture = null;
+        //}
     }
 
     // Raises the webcam texture initialized event.
     void OnInited()
     {
-        if (colors == null || colors.Length != webCamTexture.width * webCamTexture.height)
-            colors = new Color32[webCamTexture.width * webCamTexture.height];
-        if (texture == null || texture.width != webCamTexture.width || texture.height != webCamTexture.height)
-            texture = new Texture2D(webCamTexture.width, webCamTexture.height, TextureFormat.RGBA32, false);
+        _stream_on = true;
 
-        rgbaMat = new Mat(webCamTexture.height, webCamTexture.width, CvType.CV_8UC4, new Scalar(0, 0, 0, 255));
-        Utils.matToTexture2D(rgbaMat, texture, colors);
+        //if (colors == null || colors.Length != webCamTexture.width * webCamTexture.height)
+        //    colors = new Color32[webCamTexture.width * webCamTexture.height];
+        //if (texture == null || texture.width != webCamTexture.width || texture.height != webCamTexture.height)
+        //    texture = new Texture2D(webCamTexture.width, webCamTexture.height, TextureFormat.RGBA32, false);
 
-        gameObject.GetComponent<Renderer>().material.mainTexture = texture;
+        //_WebCam_Mat = new Mat(webCamTexture.height, webCamTexture.width, CvType.CV_8UC4, new Scalar(0, 0, 0, 255));
+        //Utils.matToTexture2D(_WebCam_Mat, texture, colors);
 
-        gameObject.transform.localScale = new Vector3(webCamTexture.width, webCamTexture.height, 1);
-        Debug.Log("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);
+        //gameObject.GetComponent<Renderer>().material.mainTexture = texture;
 
-        if (fpsMonitor != null)
-        {
-            fpsMonitor.Add("width", rgbaMat.width().ToString());
-            fpsMonitor.Add("height", rgbaMat.height().ToString());
-            fpsMonitor.Add("orientation", Screen.orientation.ToString());
-        }
+        //gameObject.transform.localScale = new Vector3(webCamTexture.width, webCamTexture.height, 1);
+        //Debug.Log("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);
 
-        float width = rgbaMat.width();
-        float height = rgbaMat.height();
+        //if (fpsMonitor != null)
+        //{
+        //    fpsMonitor.Add("width", _WebCam_Mat.width().ToString());
+        //    fpsMonitor.Add("height", _WebCam_Mat.height().ToString());
+        //    fpsMonitor.Add("orientation", Screen.orientation.ToString());
+        //}
 
-        float widthScale = (float)Screen.width / width;
-        float heightScale = (float)Screen.height / height;
-        if (widthScale < heightScale)
-            Camera.main.orthographicSize = (width * (float)Screen.height / (float)Screen.width) / 2;
-        else
-            Camera.main.orthographicSize = height / 2;
+        //float width = _WebCam_Mat.width();
+        //float height = _WebCam_Mat.height();
+
+        //float widthScale = (float)Screen.width / width;
+        //float heightScale = (float)Screen.height / height;
+        //if (widthScale < heightScale)
+        //    Camera.main.orthographicSize = (width * (float)Screen.height / (float)Screen.width) / 2;
+        //else
+        //    Camera.main.orthographicSize = height / 2;
     }
 
     void OnDestroy()
@@ -364,63 +342,12 @@ public class WebCamManager : MonoBehaviour
     }
     #endregion
 
-
-
     void Update()
     {
-        if (hasInitDone && webCamTexture.isPlaying && webCamTexture.didUpdateThisFrame)
-        {
-            if (stream_on)
-                Utils.webCamTextureToMat(webCamTexture, rgbaMat, colors);
-
-            PictureToCount.Compute(rgbaMat, seuillage_Type, threshold_thresh_valeur._valeur);
-
-            Mat HMI = null;
-            switch (output_Type)
-            {
-                case Output_type.original:
-                    HMI = PictureToCount.original;
-                    break;
-                case Output_type.gray:
-                    HMI = new Mat();
-                    Imgproc.cvtColor(PictureToCount.gray, HMI, Imgproc.COLOR_GRAY2RGB);
-                    break;
-                case Output_type.binary:
-                    HMI = new Mat();
-                    Imgproc.cvtColor(PictureToCount.bw, HMI, Imgproc.COLOR_GRAY2RGB);
-                    break;
-                case Output_type.augmented:
-                    HMI = PictureToCount.augmented;
-                    break;
-            }
-
-            //string message = PictureToCount.contours_filtered_count + " / " + PictureToCount.contours.Count;
-            string message = PictureToCount.contours_filtered_count.ToString();
-
-            //Imgproc.putText(HMI, message,
-            //    new Point(5, rgbaMat.rows() - 10), Imgproc.FONT_HERSHEY_SIMPLEX,
-            //    1.0, new Scalar(255, 0, 0, 0), 2, Imgproc.LINE_AA, false);
-
-            count_text.text = message;
-
-            Utils.matToTexture2D(HMI, texture, colors);
-        }
+        //if (hasInitDone && webCamTexture.isPlaying && webCamTexture.didUpdateThisFrame)
+        //{
+        //    if (_stream_on)
+        //        Utils.webCamTextureToMat(webCamTexture, _webCam_Mat, _sm. colors);
+        //}
     }
-
-    public void _output_Type_dropdown_Change()
-    {
-        TMPro.TMP_Dropdown.OptionData od = output_Type_dropdown.options[output_Type_dropdown.value];
-        Enum.TryParse(od.text, out output_Type);
-    }
-    public void _seuillage_Type_dropdown_Change()
-    {
-        TMPro.TMP_Dropdown.OptionData od = seuillage_Type_dropdown.options[seuillage_Type_dropdown.value];
-        Enum.TryParse(od.text, out seuillage_Type);
-    }
-
-    public void _stream_on_switch()
-    {
-        stream_on = !stream_on;
-    }
-
 }
