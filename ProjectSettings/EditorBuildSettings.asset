@@ -5,10 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/_JJ/sceneJJ.unity
-    guid: d97c965e56536cf47902a23e72d9f604
   - enabled: 1
-    path: Assets/_JJ/JJ.unity
-    guid: 1095d6878111ea745833100272940dfb
+    path: Assets/Scenes/Count_from_picture.unity
+    guid: 497e9420fa1866541ad397ba59cf5176
   m_configObjects: {}

@@ -20,7 +20,12 @@ public class ImageProcess : MonoBehaviour
     void ComputePicture()
     {
         //image process
-        PictureToCount.Compute(_sm._webcam_Manager._webcam_rgbaMat, PictureToCount.Seuillage_type.manuel, 50);
+        //PictureToCount.Compute(_sm._webcam_Manager._webcam_rgbaMat, PictureToCount.Seuillage_type.manuel, 50);
+        PictureToCount.Compute(_sm._webcam_Manager._webcam_rgbaMat,
+                               _sm._sourceManager.seuillage_Type,
+                               _sm._sourceManager.threshold_thresh_valeur._valeur);
+
+        _sm._sourceManager.count_text.text = PictureToCount.contours_filtered_count.ToString();
 
         //display image
         _sm._webcam_Manager._SetPicture(_sm._sourceManager._GetAskedPicture());

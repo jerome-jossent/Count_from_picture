@@ -12,13 +12,13 @@ public class SourceManager : MonoBehaviour
 
     Mat _webCam_Mat;
 
-    [SerializeField] Parametre threshold_thresh_valeur;
+    public Parametre threshold_thresh_valeur;
 
-    enum Output_type { original, gray, binary, augmented }
-    [SerializeField] Output_type output_Type;
+   public enum Output_type { original, gray, binary, augmented }
+    public Output_type output_Type;
     public TMPro.TMP_Dropdown output_Type_dropdown;
 
-    PictureToCount.Seuillage_type seuillage_Type;
+   public PictureToCount.Seuillage_type seuillage_Type;
     public TMPro.TMP_Dropdown seuillage_Type_dropdown;
 
     public TMPro.TMP_Text count_text;
@@ -29,22 +29,32 @@ public class SourceManager : MonoBehaviour
         threshold_thresh_valeur._SetValue(50);
 
 
-        //output_Type_dropdown.options.Clear();
-        //foreach (var item in Enum.GetValues(typeof(Output_type)))
-        //    output_Type_dropdown.options.Add(new TMPro.TMP_Dropdown.OptionData(item.ToString()));
+        output_Type_dropdown.options.Clear();
+        foreach (var item in Enum.GetValues(typeof(Output_type)))
+            output_Type_dropdown.options.Add(new TMPro.TMP_Dropdown.OptionData(item.ToString()));
 
-        //output_Type_dropdown.value = output_Type_dropdown.options.Count - 1;
-        //_output_Type_dropdown_Change();
+        output_Type_dropdown.value = output_Type_dropdown.options.Count - 1;
+        _output_Type_dropdown_Change();
 
 
-        //seuillage_Type_dropdown.options.Clear();
-        //foreach (var item in Enum.GetValues(typeof(PictureToCount.Seuillage_type)))
-        //    seuillage_Type_dropdown.options.Add(new TMPro.TMP_Dropdown.OptionData(item.ToString()));
+        seuillage_Type_dropdown.options.Clear();
+        foreach (var item in Enum.GetValues(typeof(PictureToCount.Seuillage_type)))
+            seuillage_Type_dropdown.options.Add(new TMPro.TMP_Dropdown.OptionData(item.ToString()));
 
-        //seuillage_Type_dropdown.value = 0;
-        //_seuillage_Type_dropdown_Change();
+        seuillage_Type_dropdown.value = 0;
+        _seuillage_Type_dropdown_Change();
 
         //stream_on = true;
+    }
+
+    public void _seuillage_Type_dropdown_Change()
+    {
+        seuillage_Type = (PictureToCount.Seuillage_type)seuillage_Type_dropdown.value;
+    }
+
+    public void _output_Type_dropdown_Change()
+    {
+        output_Type = (Output_type)output_Type_dropdown.value;
     }
 
     internal Mat _GetAskedPicture()

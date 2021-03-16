@@ -20,15 +20,13 @@ namespace OpenCVForUnityExample
 
         public Dropdown requestedResolutionDropdown;
         public ResolutionPreset requestedResolution = ResolutionPreset._640x480;
-        public Dropdown requestedFPSDropdown;
         public FPSPreset requestedFPS = FPSPreset._30;
-        public Toggle rotate90DegreeToggle;
         public Toggle flipVerticalToggle;
         public Toggle flipHorizontalToggle;
         Texture2D texture;
         WebCamTextureToMatHelper webCamTextureToMatHelper;
         FpsMonitor fpsMonitor;
-
+        Material material;
         public Mat _webcam_rgbaMat;
         ScriptsManager _sm;
 
@@ -39,7 +37,8 @@ namespace OpenCVForUnityExample
 
         void Start()
         {
-            fpsMonitor = GetComponent<FpsMonitor>();
+            material = gameObject.GetComponent<Renderer>().material;
+            //fpsMonitor = GetComponent<FpsMonitor>();
 
             webCamTextureToMatHelper = gameObject.GetComponent<WebCamTextureToMatHelper>();
             int width, height;
@@ -49,12 +48,14 @@ namespace OpenCVForUnityExample
             webCamTextureToMatHelper.requestedFPS = (int)requestedFPS;
             webCamTextureToMatHelper.Initialize();
 
-            // Update GUI state
-            requestedResolutionDropdown.value = (int)requestedResolution;
-            string[] enumNames = System.Enum.GetNames(typeof(FPSPreset));
-            int index = Array.IndexOf(enumNames, requestedFPS.ToString());
-            requestedFPSDropdown.value = index;
-            rotate90DegreeToggle.isOn = webCamTextureToMatHelper.rotate90Degree;
+            //supression 9999x9999
+            requestedResolutionDropdown.options.RemoveAt(requestedResolutionDropdown.options.Count-1);
+
+            //// Update GUI state
+            //requestedResolutionDropdown.value = (int)requestedResolution;
+            //string[] enumNames = System.Enum.GetNames(typeof(FPSPreset));
+            //int index = Array.IndexOf(enumNames, requestedFPS.ToString());
+
             flipVerticalToggle.isOn = webCamTextureToMatHelper.flipVertical;
             flipHorizontalToggle.isOn = webCamTextureToMatHelper.flipHorizontal;
         }
@@ -129,7 +130,6 @@ namespace OpenCVForUnityExample
         {
             if (webCamTextureToMatHelper.IsPlaying() && webCamTextureToMatHelper.DidUpdateThisFrame())
             {
-
                 _webcam_rgbaMat = webCamTextureToMatHelper.GetMat();
 
                 _OnNewPicture.Invoke();
@@ -141,7 +141,12 @@ namespace OpenCVForUnityExample
 
         public void _SetPicture(Mat matToDisplay)
         {
+            if (texture == null)
+                texture = new Texture2D(matToDisplay.cols(), matToDisplay.rows(), TextureFormat.RGBA32, false);
+
             Utils.fastMatToTexture2D(matToDisplay, texture);
+
+            material.mainTexture = texture;
         }
 
         void OnDestroy()
@@ -202,13 +207,7 @@ namespace OpenCVForUnityExample
 
         public void OnRotate90DegreeToggleValueChanged()
         {
-            if (rotate90DegreeToggle.isOn != webCamTextureToMatHelper.rotate90Degree)
-            {
-                webCamTextureToMatHelper.rotate90Degree = rotate90DegreeToggle.isOn;
-            }
 
-            if (fpsMonitor != null)
-                fpsMonitor.Add("rotate90Degree", webCamTextureToMatHelper.rotate90Degree.ToString());
         }
 
         public void OnFlipVerticalToggleValueChanged()
