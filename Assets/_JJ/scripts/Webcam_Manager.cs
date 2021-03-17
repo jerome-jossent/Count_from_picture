@@ -13,7 +13,7 @@ using UnityEngine.UI;
 namespace OpenCVForUnityExample
 {
     //JJ edition
-    [RequireComponent(typeof(WebCamTextureToMatHelper))]
+    [RequireComponent(typeof(WebCamTextureToMatHelper_JJO))]
     public class Webcam_Manager : MonoBehaviour
     {
         public UnityEvent _OnNewPicture = new UnityEvent();
@@ -23,12 +23,13 @@ namespace OpenCVForUnityExample
         public FPSPreset requestedFPS = FPSPreset._30;
         public Toggle flipVerticalToggle;
         public Toggle flipHorizontalToggle;
-        Texture2D texture;
-        WebCamTextureToMatHelper webCamTextureToMatHelper;
-        FpsMonitor fpsMonitor;
-        Material material;
         public Mat _webcam_rgbaMat;
+
         ScriptsManager _sm;
+        Texture2D texture;
+        Material material;
+        WebCamTextureToMatHelper_JJO webCamTextureToMatHelper;
+        //FpsMonitor fpsMonitor;
 
         private void Awake()
         {
@@ -40,7 +41,7 @@ namespace OpenCVForUnityExample
             material = gameObject.GetComponent<Renderer>().material;
             //fpsMonitor = GetComponent<FpsMonitor>();
 
-            webCamTextureToMatHelper = gameObject.GetComponent<WebCamTextureToMatHelper>();
+            webCamTextureToMatHelper = gameObject.GetComponent<WebCamTextureToMatHelper_JJO>();
             int width, height;
             Dimensions(requestedResolution, out width, out height);
             webCamTextureToMatHelper.requestedWidth = width;
@@ -74,20 +75,20 @@ namespace OpenCVForUnityExample
             gameObject.transform.localScale = new Vector3(webCamTextureMat.cols(), webCamTextureMat.rows(), 1);
             Debug.Log("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);
 
-            if (fpsMonitor != null)
-            {
-                fpsMonitor.Add("deviceName", webCamTextureToMatHelper.GetDeviceName().ToString());
-                fpsMonitor.Add("width", webCamTextureToMatHelper.GetWidth().ToString());
-                fpsMonitor.Add("height", webCamTextureToMatHelper.GetHeight().ToString());
-                fpsMonitor.Add("videoRotationAngle", webCamTextureToMatHelper.GetWebCamTexture().videoRotationAngle.ToString());
-                fpsMonitor.Add("videoVerticallyMirrored", webCamTextureToMatHelper.GetWebCamTexture().videoVerticallyMirrored.ToString());
-                fpsMonitor.Add("camera fps", webCamTextureToMatHelper.GetFPS().ToString());
-                fpsMonitor.Add("isFrontFacing", webCamTextureToMatHelper.IsFrontFacing().ToString());
-                fpsMonitor.Add("rotate90Degree", webCamTextureToMatHelper.rotate90Degree.ToString());
-                fpsMonitor.Add("flipVertical", webCamTextureToMatHelper.flipVertical.ToString());
-                fpsMonitor.Add("flipHorizontal", webCamTextureToMatHelper.flipHorizontal.ToString());
-                fpsMonitor.Add("orientation", Screen.orientation.ToString());
-            }
+            //if (fpsMonitor != null)
+            //{
+            //    fpsMonitor.Add("deviceName", webCamTextureToMatHelper.GetDeviceName().ToString());
+            //    fpsMonitor.Add("width", webCamTextureToMatHelper.GetWidth().ToString());
+            //    fpsMonitor.Add("height", webCamTextureToMatHelper.GetHeight().ToString());
+            //    fpsMonitor.Add("videoRotationAngle", webCamTextureToMatHelper.GetWebCamTexture().videoRotationAngle.ToString());
+            //    fpsMonitor.Add("videoVerticallyMirrored", webCamTextureToMatHelper.GetWebCamTexture().videoVerticallyMirrored.ToString());
+            //    fpsMonitor.Add("camera fps", webCamTextureToMatHelper.GetFPS().ToString());
+            //    fpsMonitor.Add("isFrontFacing", webCamTextureToMatHelper.IsFrontFacing().ToString());
+            //    fpsMonitor.Add("rotate90Degree", webCamTextureToMatHelper.rotate90Degree.ToString());
+            //    fpsMonitor.Add("flipVertical", webCamTextureToMatHelper.flipVertical.ToString());
+            //    fpsMonitor.Add("flipHorizontal", webCamTextureToMatHelper.flipHorizontal.ToString());
+            //    fpsMonitor.Add("orientation", Screen.orientation.ToString());
+            //}
 
 
             float width = webCamTextureMat.width();
@@ -120,10 +121,10 @@ namespace OpenCVForUnityExample
         {
             Debug.Log("OnWebCamTextureToMatHelperErrorOccurred " + errorCode);
 
-            if (fpsMonitor != null)
-            {
-                fpsMonitor.consoleText = "ErrorCode: " + errorCode;
-            }
+            //if (fpsMonitor != null)
+            //{
+            //    fpsMonitor.consoleText = "ErrorCode: " + errorCode;
+            //}
         }
 
         void Update()
@@ -217,8 +218,8 @@ namespace OpenCVForUnityExample
                 webCamTextureToMatHelper.flipVertical = flipVerticalToggle.isOn;
             }
 
-            if (fpsMonitor != null)
-                fpsMonitor.Add("flipVertical", webCamTextureToMatHelper.flipVertical.ToString());
+            //if (fpsMonitor != null)
+            //    fpsMonitor.Add("flipVertical", webCamTextureToMatHelper.flipVertical.ToString());
         }
 
         public void OnFlipHorizontalToggleValueChanged()
@@ -228,8 +229,8 @@ namespace OpenCVForUnityExample
                 webCamTextureToMatHelper.flipHorizontal = flipHorizontalToggle.isOn;
             }
 
-            if (fpsMonitor != null)
-                fpsMonitor.Add("flipHorizontal", webCamTextureToMatHelper.flipHorizontal.ToString());
+            //if (fpsMonitor != null)
+            //    fpsMonitor.Add("flipHorizontal", webCamTextureToMatHelper.flipHorizontal.ToString());
         }
 
         public enum FPSPreset : int

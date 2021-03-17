@@ -6,19 +6,15 @@ using OpenCVForUnity.CoreModule;
 using OpenCVForUnity.ImgprocModule;
 public class SourceManager : MonoBehaviour
 {
-    public Mat _source_Mat;
-
     ScriptsManager _sm;
-
-    Mat _webCam_Mat;
-
+    public Mat _source_Mat;
     public Parametre threshold_thresh_valeur;
 
-   public enum Output_type { original, gray, binary, augmented }
+    public enum Output_type { original, gray, binary, augmented }
     public Output_type output_Type;
     public TMPro.TMP_Dropdown output_Type_dropdown;
 
-   public PictureToCount.Seuillage_type seuillage_Type;
+    public PictureToCount.Seuillage_type seuillage_Type;
     public TMPro.TMP_Dropdown seuillage_Type_dropdown;
 
     public TMPro.TMP_Text count_text;
@@ -43,8 +39,6 @@ public class SourceManager : MonoBehaviour
 
         seuillage_Type_dropdown.value = 0;
         _seuillage_Type_dropdown_Change();
-
-        //stream_on = true;
     }
 
     public void _seuillage_Type_dropdown_Change()
