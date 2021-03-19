@@ -142,6 +142,11 @@ namespace OpenCVForUnityExample
 
         public void _SetPicture(Mat matToDisplay)
         {
+            if (matToDisplay == null)
+            {
+                Debug.Log("matToDisplay vide");
+                return;
+            }
             if (texture == null)
                 texture = new Texture2D(matToDisplay.cols(), matToDisplay.rows(), TextureFormat.RGBA32, false);
 

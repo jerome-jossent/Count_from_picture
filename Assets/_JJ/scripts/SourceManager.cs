@@ -9,6 +9,8 @@ public class SourceManager : MonoBehaviour
     ScriptsManager _sm;
     public Mat _source_Mat;
     public Parametre threshold_thresh_valeur;
+    public Parametre threshold_surf_min_valeur;
+    public Parametre threshold_surf_max_valeur;
 
     public enum Output_type { original, gray, binary, augmented }
     public Output_type output_Type;
@@ -44,11 +46,18 @@ public class SourceManager : MonoBehaviour
     public void _seuillage_Type_dropdown_Change()
     {
         seuillage_Type = (PictureToCount.Seuillage_type)seuillage_Type_dropdown.value;
+        _Compute();
     }
 
     public void _output_Type_dropdown_Change()
     {
         output_Type = (Output_type)output_Type_dropdown.value;
+        _Compute();
+    }
+
+    public void _Compute()
+    {
+        _sm._imageProcess.ComputePicture();
     }
 
     internal Mat _GetAskedPicture()

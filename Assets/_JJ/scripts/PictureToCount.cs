@@ -21,8 +21,13 @@ public class PictureToCount
 
     public enum Seuillage_type { manuel, adaptative}
 
-    internal static void Compute(Mat rgbaMat, Seuillage_type seuillage_Type, double threshold_thresh)
+    internal static void Compute(Mat rgbaMat, Seuillage_type seuillage_Type, double threshold_thresh, float seuilMin_float, float seuilMax_float)
     {
+        if (rgbaMat == null)
+        {
+            Debug.Log("vide");
+            return;
+        }
         original = new Mat();
         rgbaMat.copyTo(original);
 
@@ -50,13 +55,19 @@ public class PictureToCount
         contours = new List<MatOfPoint>();
         Imgproc.findContours(bw, contours, hierarchy, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE);
 
+        int area_tot = rgbaMat.cols() * rgbaMat.rows();
+        int seuilMin = (int)(area_tot * seuilMin_float/100);
+        int seuilMax = (int)(area_tot * seuilMax_float/100);
+
+        Debug.Log($"{seuilMin}\t{seuilMax}\t[{area_tot}]");
+
         contours_filtered_count = 0;
         for (int i = 0; i < contours.Count; ++i)
         {
             // Calculate the area of each contour
             double area = Imgproc.contourArea(contours[i]);
             // Ignore contours that are too small or too large
-            if (area < 1e2 || 1e5 < area)
+            if (area < seuilMin || seuilMax < area)
                 continue;
 
             contours_filtered_count++;
