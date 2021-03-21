@@ -1145,6 +1145,7 @@ namespace OpenCVForUnity.UnityUtils.Helper
                     return 4;
             }
         }
+
         protected virtual int ColorConversionCodes(ColorFormat srcType, ColorFormat dstType)
         {
             if (srcType == ColorFormat.GRAY)

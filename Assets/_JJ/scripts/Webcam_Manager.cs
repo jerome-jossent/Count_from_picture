@@ -28,6 +28,10 @@ namespace OpenCVForUnityExample
         ScriptsManager _sm;
         Texture2D texture;
         Material material;
+
+        Texture2D textureOverlay;
+        public GameObject quadOverlay;
+        Material material_overlay;
         WebCamTextureToMatHelper_JJO webCamTextureToMatHelper;
         //FpsMonitor fpsMonitor;
 
@@ -38,7 +42,13 @@ namespace OpenCVForUnityExample
 
         void Start()
         {
+            INIT();
+        }
+
+        public void INIT()
+        {
             material = gameObject.GetComponent<Renderer>().material;
+            material_overlay = quadOverlay.GetComponent<Renderer>().material;
             //fpsMonitor = GetComponent<FpsMonitor>();
 
             webCamTextureToMatHelper = gameObject.GetComponent<WebCamTextureToMatHelper_JJO>();
@@ -50,7 +60,7 @@ namespace OpenCVForUnityExample
             webCamTextureToMatHelper.Initialize();
 
             //supression 9999x9999
-            requestedResolutionDropdown.options.RemoveAt(requestedResolutionDropdown.options.Count-1);
+            //requestedResolutionDropdown.options.RemoveAt(requestedResolutionDropdown.options.Count - 1);
 
             //// Update GUI state
             //requestedResolutionDropdown.value = (int)requestedResolution;
@@ -69,8 +79,11 @@ namespace OpenCVForUnityExample
 
             texture = new Texture2D(webCamTextureMat.cols(), webCamTextureMat.rows(), TextureFormat.RGBA32, false);
             Utils.fastMatToTexture2D(webCamTextureMat, texture);
+            material.mainTexture = texture;
 
-            gameObject.GetComponent<Renderer>().material.mainTexture = texture;
+            textureOverlay = new Texture2D(webCamTextureMat.cols(), webCamTextureMat.rows(), TextureFormat.RGBA32, false);
+            Utils.fastMatToTexture2D(webCamTextureMat, textureOverlay);
+            material_overlay.mainTexture = textureOverlay;
 
             gameObject.transform.localScale = new Vector3(webCamTextureMat.cols(), webCamTextureMat.rows(), 1);
             Debug.Log("Screen.width " + Screen.width + " Screen.height " + Screen.height + " Screen.orientation " + Screen.orientation);
@@ -89,7 +102,6 @@ namespace OpenCVForUnityExample
             //    fpsMonitor.Add("flipHorizontal", webCamTextureToMatHelper.flipHorizontal.ToString());
             //    fpsMonitor.Add("orientation", Screen.orientation.ToString());
             //}
-
 
             float width = webCamTextureMat.width();
             float height = webCamTextureMat.height();
@@ -114,6 +126,11 @@ namespace OpenCVForUnityExample
             {
                 Texture2D.Destroy(texture);
                 texture = null;
+            }
+            if (textureOverlay != null)
+            {
+                Texture2D.Destroy(textureOverlay);
+                textureOverlay = null;
             }
         }
 
@@ -155,18 +172,29 @@ namespace OpenCVForUnityExample
             material.mainTexture = texture;
         }
 
+        public void _SetOverlay(Mat matToOverlay)
+        {
+            if (matToOverlay == null)
+            {
+                Debug.Log("matToOverlay vide");
+                return;
+            }
+            if (textureOverlay == null)
+                textureOverlay = new Texture2D(matToOverlay.cols(), matToOverlay.rows(), TextureFormat.RGBA32, false);
+
+            Utils.fastMatToTexture2D(matToOverlay, textureOverlay);
+
+            material_overlay.mainTexture = textureOverlay;
+        }
+
         void OnDestroy()
         {
             webCamTextureToMatHelper.Dispose();
         }
 
-        public void OnBackButtonClick()
-        {
-            SceneManager.LoadScene("OpenCVForUnityExample");
-        }
-
         public void OnPlayButtonClick()
         {
+            INIT();
             webCamTextureToMatHelper.Play();
         }
 
@@ -255,7 +283,7 @@ namespace OpenCVForUnityExample
             _640x480,
             _1280x720,
             _1920x1080,
-            _9999x9999,
+            //_9999x9999,
         }
 
         private void Dimensions(ResolutionPreset preset, out int width, out int height)
@@ -278,10 +306,10 @@ namespace OpenCVForUnityExample
                     width = 1920;
                     height = 1080;
                     break;
-                case ResolutionPreset._9999x9999:
-                    width = 9999;
-                    height = 9999;
-                    break;
+                //case ResolutionPreset._9999x9999:
+                //    width = 9999;
+                //    height = 9999;
+                //    break;
                 default:
                     width = height = 0;
                     break;

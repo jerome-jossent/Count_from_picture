@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Count_from_picture.unity
+    path: Assets/_JJ/Count_from_picture.unity
     guid: 497e9420fa1866541ad397ba59cf5176
+  - enabled: 0
+    path: Assets/OpenCVForUnity/Examples/Basic/WebCamTextureToMatExample/WebCamTextureToMatExample.unity
+    guid: 8d8da490363d5454994df36ee27f1ddb
   m_configObjects: {}
